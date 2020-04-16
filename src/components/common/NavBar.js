@@ -15,7 +15,6 @@ const NavBar = ({ children }) => {
       }
     }
   `)
-  console.log(`data`, data)
   const logo = data.ghostSettings.logo
   let location = window.location
   useEffect(() => {
@@ -67,7 +66,7 @@ const NavbarLayout = styled.div`
 `
 
 const NavBackground = styled.div`
-  position: fixed;
+  position: sticky;
   display: flex;
   align-items: center;
   justify-content: space-between;

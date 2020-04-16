@@ -55,17 +55,17 @@ const BackGroundLayVideo = styled.div`
 `
 
 const Title = styled.div`
-  width: 881px;
+  width: 880px;
   position: absolute;
   z-index: 100;
   top: 15%;
   left: 5%;
-  font-size: 45px;
   font-family: Montserrat, sans-serif;
   font-style: normal;
 
   h1 {
     margin: 0;
+    font-size: 100px !important;
     color: ${({ theme }) => theme.color.blanco};
   }
 `
