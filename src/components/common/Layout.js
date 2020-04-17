@@ -23,7 +23,7 @@ import '../../styles/app.css'
  * styles, and meta data for each page.
  *
  */
-const DefaultLayout = ({ bodyClass }) => {
+const DefaultLayout = ({ bodyClass, location }) => {
   const data = useStaticQuery(graphql`
     query GhostSettings {
       allGhostSettings {
@@ -46,7 +46,6 @@ const DefaultLayout = ({ bodyClass }) => {
   const site = data.allGhostSettings.edges[0].node
 
   let templateToRender
-  let location = window ? window.location.pathname : `/`
   switch (location) {
     case `/nosotros`: {
       templateToRender = <AboutTemplate id='AboutTemplate' />

@@ -4,7 +4,7 @@ import { Link, graphql, useStaticQuery } from 'gatsby'
 
 // import { crown } from "../svgIcons/svgIcons";
 
-const NavBar = ({ children }) => {
+const NavBar = ({ children, location }) => {
   const [isNavColor, setIsNavColor] = useState(false)
   const [overflow, setOverflow] = useState(`hidden`)
 
@@ -16,7 +16,6 @@ const NavBar = ({ children }) => {
     }
   `)
   const logo = data.ghostSettings.logo
-  let location = window ? window.location : { pathname: `/` }
   useEffect(() => {
     if (location.pathname.match(/nosotros/)) {
       setIsNavColor(true)
