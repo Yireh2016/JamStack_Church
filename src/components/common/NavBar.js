@@ -16,7 +16,7 @@ const NavBar = ({ children }) => {
     }
   `)
   const logo = data.ghostSettings.logo
-  let location = window.location
+  let location = window ? window.location : { pathname: `/` }
   useEffect(() => {
     if (location.pathname.match(/nosotros/)) {
       setIsNavColor(true)

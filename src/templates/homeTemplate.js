@@ -5,39 +5,35 @@ import PropTypes from 'prop-types'
 
 import Call2Action from '../components/common/Call2Action'
 
-const Home = ({ title }) => {
-  const goToAbout = () => {
-    window.location.href = `/nosotros`
-  }
+const Home = ({ title }) => (
+  <>
+    <BackGroundLayVideo id='BackGroundLayVideo'>
+      <Iframe
+        frameborder='0'
+        scrolling='no'
+        marginheight='0'
+        marginwidth='0'
+        allowfullscreen
+        width='100%'
+        height='100%'
+        type='text/html'
+        src='https://www.youtube.com/embed/RDMMtulshRDlQKM70_2DcsIncY?list=RD70_2DcsIncY&autoplay=1&mute=1&loop=1&controls=0&playsinline=0&showinfo=0'
+      />
+    </BackGroundLayVideo>
+    <BackGroundLay id='BackGroundLay' />
 
-  return (
-    <>
-      <BackGroundLayVideo id='BackGroundLayVideo'>
-        <Iframe
-          frameborder='0'
-          scrolling='no'
-          marginheight='0'
-          marginwidth='0'
-          allowfullscreen
-          width='100%'
-          height='100%'
-          type='text/html'
-          src='https://www.youtube.com/embed/RDMMtulshRDlQKM70_2DcsIncY?list=RD70_2DcsIncY&autoplay=1&mute=1&loop=1&controls=0&playsinline=0&showinfo=0'
-        />
-      </BackGroundLayVideo>
-      <BackGroundLay id='BackGroundLay' />
-
-      <Cruz id='Cruz'>
-        <div id='horizontal' />
-        <div id='vertical' />
-      </Cruz>
-      <Title id='Title'>
-        <h1>{title}</h1>
-        <Call2Action onClick={goToAbout}>Conócenos</Call2Action>
-      </Title>
-    </>
-  )
-}
+    <Cruz id='Cruz'>
+      <div id='horizontal' />
+      <div id='vertical' />
+    </Cruz>
+    <Title id='Title'>
+      <h1>{title}</h1>
+      <a href='/nosotros'>
+        <Call2Action>Conócenos</Call2Action>
+      </a>
+    </Title>
+  </>
+)
 
 Home.propTypes = {
   title: PropTypes.string

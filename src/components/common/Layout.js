@@ -46,7 +46,7 @@ const DefaultLayout = ({ bodyClass }) => {
   const site = data.allGhostSettings.edges[0].node
 
   let templateToRender
-  let location = window.location.pathname
+  let location = window ? window.location.pathname : `/`
   switch (location) {
     case `/nosotros`: {
       templateToRender = <AboutTemplate id='AboutTemplate' />
