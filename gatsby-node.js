@@ -1,6 +1,5 @@
 const path = require(`path`)
 const { postsPerPage } = require(`./src/utils/siteConfig`)
-const { paginate } = require(`gatsby-awesome-pagination`)
 
 /**
  * Here is the place where Gatsby creates the URLs for all the
