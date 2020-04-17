@@ -1,10 +1,10 @@
 {
   "development": {
-    "apiUrl": "http://142.44.240.90:2368",
+    "apiUrl": "https://ghost.swordvoice.com",
     "contentApiKey": "076db8297c37587122299649ae"
   },
   "production": {
-    "apiUrl": "http://142.44.240.90:2368",
+    "apiUrl": "https://ghost.swordvoice.com",
     "contentApiKey": "076db8297c37587122299649ae"
   }
 }
