@@ -7,9 +7,6 @@ import { ThemeProvider } from 'styled-components'
 
 import { mainTheme } from '../../themes/mainTheme'
 
-import HomeTemplate from '../../templates/homeTemplate'
-import AboutTemplate from '../../templates/aboutTemplate'
-
 import NavBar from './NavBar'
 
 // Styles
@@ -23,7 +20,7 @@ import '../../styles/app.css'
  * styles, and meta data for each page.
  *
  */
-const DefaultLayout = ({ bodyClass, location }) => {
+const DefaultLayout = ({ children, bodyClass, isHome }) => {
   const data = useStaticQuery(graphql`
     query GhostSettings {
       allGhostSettings {
@@ -33,30 +30,10 @@ const DefaultLayout = ({ bodyClass, location }) => {
           }
         }
       }
-      file(relativePath: { eq: "ghost-icon.png" }) {
-        childImageSharp {
-          fixed(width: 30, height: 30) {
-            ...GatsbyImageSharpFixed
-          }
-        }
-      }
     }
   `)
 
   const site = data.allGhostSettings.edges[0].node
-
-  let templateToRender
-  switch (location) {
-    case `/nosotros`: {
-      templateToRender = <AboutTemplate id='AboutTemplate' />
-      break
-    }
-
-    default: {
-      templateToRender = <HomeTemplate id='HomeTemplate' title={site.title} />
-      break
-    }
-  }
 
   return (
     <>
@@ -66,7 +43,9 @@ const DefaultLayout = ({ bodyClass, location }) => {
           <style type='text/css'>{`${site.codeinjection_styles}`}</style>
           <body className={bodyClass} />
         </Helmet>
-        <NavBar id='NavBar'>{templateToRender}</NavBar>
+        <NavBar id='NavBar' isHome={isHome}>
+          {children}
+        </NavBar>
       </ThemeProvider>
     </>
   )

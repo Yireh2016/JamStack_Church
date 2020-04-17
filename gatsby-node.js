@@ -35,6 +35,9 @@ exports.createPages = async ({ graphql, actions }) => {
           }
         }
       }
+      ghostPage(slug: { eq: "home" }) {
+        title
+      }
       allGhostPage(sort: { order: ASC, fields: published_at }) {
         edges {
           node {
@@ -56,6 +59,7 @@ exports.createPages = async ({ graphql, actions }) => {
   const authors = result.data.allGhostAuthor.edges
   const pages = result.data.allGhostPage.edges
   const posts = result.data.allGhostPost.edges
+  const home = result.data.ghostPage
 
   // Load templates
   const indexTemplate = path.resolve(`./src/templates/index.js`)
@@ -64,9 +68,11 @@ exports.createPages = async ({ graphql, actions }) => {
   const pageTemplate = path.resolve(`./src/templates/page.js`)
   const postTemplate = path.resolve(`./src/templates/post.js`)
 
+  console.log(`node result,indexTemplate`, { result, home, indexTemplate })
   createPage({
     path: `/`,
-    component: indexTemplate
+    component: indexTemplate,
+    context: { title: home.title }
   })
   // Create tag pages
   tags.forEach(({ node }) => {

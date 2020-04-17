@@ -4,6 +4,7 @@ import Iframe from 'react-iframe'
 import PropTypes from 'prop-types'
 
 import Call2Action from '../components/common/Call2Action'
+import { Link } from 'gatsby'
 
 const Home = ({ title }) => (
   <>
@@ -28,9 +29,9 @@ const Home = ({ title }) => (
     </Cruz>
     <Title id='Title'>
       <h1>{title}</h1>
-      <a href='/nosotros'>
+      <Link to='/nosotros'>
         <Call2Action>Conócenos</Call2Action>
-      </a>
+      </Link>
     </Title>
   </>
 )

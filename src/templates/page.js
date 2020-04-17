@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { graphql } from 'gatsby'
 import Helmet from 'react-helmet'
+import styled from 'styled-components'
 
 import { Layout } from '../components/common'
 import { MetaData } from '../components/common/meta'
@@ -14,6 +15,7 @@ import { MetaData } from '../components/common/meta'
  */
 const Page = ({ data, location }) => {
   const page = data.ghostPage
+  const { html, slug, feature_image, title } = data.ghostPage
 
   return (
     <>
@@ -21,18 +23,16 @@ const Page = ({ data, location }) => {
       <Helmet>
         <style type='text/css'>{`${page.codeinjection_styles}`}</style>
       </Helmet>
-      <Layout>
-        <div className='container'>
-          <article className='content'>
-            <h1 className='content-title'>{page.title}</h1>
-
-            {/* The main page content */}
-            <section
-              className='content-body load-external-scripts'
-              dangerouslySetInnerHTML={{ __html: page.html }}
-            />
-          </article>
-        </div>
+      <Layout isHome={false}>
+        <PageLayout id='PageLayout'>
+          <PageHeader id='PageHeader'>
+            <img src={feature_image} alt={`${slug} main image`} />
+            <TitleCont>
+              <h1> {title}</h1>
+            </TitleCont>
+          </PageHeader>
+          <section dangerouslySetInnerHTML={{ __html: html }}></section>
+        </PageLayout>
       </Layout>
     </>
   )
@@ -51,6 +51,38 @@ Page.propTypes = {
 }
 
 export default Page
+
+const PageLayout = styled.div`
+  margin: 10px auto 0 auto;
+  width: calc(100% * 8 / 12);
+  height: 100%;
+  max-width: 600px;
+  background: ${({ theme }) => theme.blanco};
+`
+
+const PageHeader = styled.header`
+  position: relative;
+  width: 100%;
+  height: 400px;
+  h1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+`
+
+const TitleCont = styled.div`
+  top: 0;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  background: ${({ theme }) => theme.color.negroAlpha};
+  h1 {
+    color: ${({ theme }) => theme.color.dorado};
+  }
+`
 
 export const postQuery = graphql`
   query($slug: String!) {

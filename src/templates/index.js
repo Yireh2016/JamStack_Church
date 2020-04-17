@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { graphql } from 'gatsby'
 import { ThemeProvider } from 'styled-components'
 
 import { mainTheme } from '../themes/mainTheme'
 
-import { Layout as MainLayout } from '../components/common'
+import { Layout } from '../components/common'
 import { MetaData } from '../components/common/meta'
+import HomeTemplate from './homeTemplate'
 
 /**
  * Main index page (home page)
@@ -16,35 +16,22 @@ import { MetaData } from '../components/common/meta'
  * in /utils/siteConfig.js under `postsPerPage`.
  *
  */
-const Index = ({ location }) => (
-  // return (
-  //     <>
-  //         <MetaData location={location} />
-  //         <Layout isHome={true}>
-  //             <div className="container">
-  //                 <section className="post-feed">
-  //                     {posts.map(({ node }) => (
-  //                         // The tag below includes the markup for each post - components/common/PostCard.js
-  //                         <PostCard key={node.id} post={node} />
-  //                     ))}
-  //                 </section>
-  //                 <Pagination pageContext={pageContext} />
-  //             </div>
-  //         </Layout>
-  //     </>
-  // );
+const Index = ({ location, pageContext }) => (
   <>
     <ThemeProvider theme={mainTheme}>
       <MetaData location={location} />
-      <MainLayout id='MainLayout' />
+      <Layout isHome={true} id='Layout'>
+        <HomeTemplate title={pageContext.title}></HomeTemplate>
+      </Layout>
     </ThemeProvider>
   </>
 )
 
 Index.propTypes = {
-  location: PropTypes.shape({
-    pathname: PropTypes.string.isRequired
-  }).isRequired
+  location: PropTypes.object,
+  pageContext: PropTypes.shape({
+    title: PropTypes.string
+  })
 }
 
 export default Index

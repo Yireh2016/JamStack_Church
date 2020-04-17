@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Link, graphql, useStaticQuery } from 'gatsby'
+import PropTypes from 'prop-types'
 
 // import { crown } from "../svgIcons/svgIcons";
 
-const NavBar = ({ children, location }) => {
+const NavBar = ({ children, isHome }) => {
   const [isNavColor, setIsNavColor] = useState(false)
   const [overflow, setOverflow] = useState(`hidden`)
 
@@ -17,14 +18,14 @@ const NavBar = ({ children, location }) => {
   `)
   const logo = data.ghostSettings.logo
   useEffect(() => {
-    if (location.pathname.match(/nosotros/)) {
+    if (!isHome) {
       setIsNavColor(true)
       setOverflow(`scroll`)
       return
     }
     setIsNavColor(false)
     setOverflow(`hidden`)
-  }, [location])
+  }, [isHome])
 
   return (
     <NavbarLayout overflow={overflow} id='NavbarLayout'>
@@ -35,7 +36,7 @@ const NavBar = ({ children, location }) => {
         <Nav id='Nav'>
           <ul>
             <li>
-              <Link to='/home'>Iglesia</Link>
+              <Link to='/'>Iglesia</Link>
             </li>
             <li>
               <Link to='/nosotros'>Nosotros</Link>
@@ -51,6 +52,15 @@ const NavBar = ({ children, location }) => {
     </NavbarLayout>
   )
 }
+
+NavBar.defaultProps = {
+  isHome: false
+}
+
+NavBar.propTypes = {
+  isHome: PropTypes.bool
+}
+
 export default NavBar
 
 const NavbarLayout = styled.div`
