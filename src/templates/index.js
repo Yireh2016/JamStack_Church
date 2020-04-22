@@ -20,7 +20,7 @@ const Index = ({ location, pageContext }) => (
   <>
     <ThemeProvider theme={mainTheme}>
       <MetaData location={location} />
-      <Layout isHome={true} id='Layout'>
+      <Layout isHome={true} nav={pageContext.navigation} id='Layout'>
         <HomeTemplate title={pageContext.title}></HomeTemplate>
       </Layout>
     </ThemeProvider>
@@ -30,7 +30,8 @@ const Index = ({ location, pageContext }) => (
 Index.propTypes = {
   location: PropTypes.object,
   pageContext: PropTypes.shape({
-    title: PropTypes.string
+    title: PropTypes.string,
+    navigation: PropTypes.object
   })
 }
 

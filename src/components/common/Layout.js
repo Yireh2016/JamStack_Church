@@ -20,7 +20,7 @@ import '../../styles/app.css'
  * styles, and meta data for each page.
  *
  */
-const DefaultLayout = ({ children, bodyClass, isHome }) => {
+const DefaultLayout = ({ children, bodyClass, isHome, nav }) => {
   const data = useStaticQuery(graphql`
     query GhostSettings {
       allGhostSettings {
@@ -35,6 +35,8 @@ const DefaultLayout = ({ children, bodyClass, isHome }) => {
 
   const site = data.allGhostSettings.edges[0].node
 
+  console.log(`nav in Layout`, nav)
+
   return (
     <>
       <ThemeProvider theme={mainTheme}>
@@ -43,7 +45,7 @@ const DefaultLayout = ({ children, bodyClass, isHome }) => {
           <style type='text/css'>{`${site.codeinjection_styles}`}</style>
           <body className={bodyClass} />
         </Helmet>
-        <NavBar id='NavBar' isHome={isHome}>
+        <NavBar id='NavBar' nav={nav} isHome={isHome}>
           {children}
         </NavBar>
       </ThemeProvider>
@@ -54,6 +56,7 @@ const DefaultLayout = ({ children, bodyClass, isHome }) => {
 DefaultLayout.propTypes = {
   bodyClass: PropTypes.string,
   isHome: PropTypes.bool,
+  nav: PropTypes.object,
   data: PropTypes.shape({
     file: PropTypes.object,
     allGhostSettings: PropTypes.object.isRequired

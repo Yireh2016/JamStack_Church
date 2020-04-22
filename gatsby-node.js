@@ -1,5 +1,6 @@
 const path = require(`path`)
 const { postsPerPage } = require(`./src/utils/siteConfig`)
+const { log } = require(`./src/utils/logguer`)
 
 /**
  * Here is the place where Gatsby creates the URLs for all the
@@ -15,6 +16,12 @@ exports.createPages = async ({ graphql, actions }) => {
           node {
             slug
           }
+        }
+      }
+      ghostSettings {
+        navigation {
+          label
+          url
         }
       }
       allGhostTag(sort: { order: ASC, fields: name }) {
@@ -60,6 +67,7 @@ exports.createPages = async ({ graphql, actions }) => {
   const pages = result.data.allGhostPage.edges
   const posts = result.data.allGhostPost.edges
   const home = result.data.ghostPage
+  const settings = result.data.ghostSettings
 
   // Load templates
   const indexTemplate = path.resolve(`./src/templates/index.js`)
@@ -68,11 +76,29 @@ exports.createPages = async ({ graphql, actions }) => {
   const pageTemplate = path.resolve(`./src/templates/page.js`)
   const postTemplate = path.resolve(`./src/templates/post.js`)
 
-  console.log(`node result,indexTemplate`, { result, home, indexTemplate })
+  log(`node result,indexTemplate`, { result, home, indexTemplate })
+
+  const multiLevelNav = nav => {
+    const resultObj = {}
+    for (let i = 0; i < nav.length; i++) {
+      const label = nav[i].label
+      const url = nav[i].url
+      if (url.match(/\//g).length <= 2) {
+        resultObj[label.toLowerCase()] = { label, url, sub: [] }
+      } else if (url.match(/\//g).length === 3) {
+        resultObj[url.match(/^\/([a-z]*)\//)[1]].sub.push({ label, url })
+      }
+    }
+
+    return resultObj
+  }
+
+  const navigation = multiLevelNav(settings.navigation)
+
   createPage({
     path: `/`,
     component: indexTemplate,
-    context: { title: home.title }
+    context: { title: home.title, navigation }
   })
   // Create tag pages
   tags.forEach(({ node }) => {
@@ -172,7 +198,8 @@ exports.createPages = async ({ graphql, actions }) => {
       context: {
         // Data passed to context is available
         // in page queries as GraphQL variables.
-        slug: node.slug
+        slug: node.slug,
+        navigation
       }
     })
   })

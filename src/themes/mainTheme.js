@@ -6,5 +6,17 @@ export const mainTheme = {
     violet: `rgba(36, 23, 54, 1)`,
     negroAlpha: `rgba(4, 4, 4, 0.81)`
   },
-  font: `Montserrat, sans-serif`
+  font: `Montserrat, sans-serif`,
+  linksHovered: `
+    background: #EDB955;
+    color: rgba(36, 23, 54, 1);
+    text-decoration: none;
+    transition: all 200ms ease;
+    cursor: pointer;
+  `,
+  link: `
+    text-align: center;
+    color: #EDB955;
+    width: 150px;
+    padding: 15px;`
 }

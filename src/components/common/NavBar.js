@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import styled, { ThemeProvider } from 'styled-components'
 import { Link, graphql, useStaticQuery } from 'gatsby'
 import PropTypes from 'prop-types'
 
-// import { crown } from "../svgIcons/svgIcons";
+import { mainTheme } from '../../themes/mainTheme'
 
-const NavBar = ({ children, isHome }) => {
+const NavBar = ({ children, isHome, nav }) => {
   const [isNavColor, setIsNavColor] = useState(false)
   const [overflow, setOverflow] = useState(`hidden`)
 
@@ -13,6 +13,10 @@ const NavBar = ({ children, isHome }) => {
     query ghostSettings {
       ghostSettings {
         logo
+        navigation {
+          label
+          url
+        }
       }
     }
   `)
@@ -27,29 +31,63 @@ const NavBar = ({ children, isHome }) => {
     setOverflow(`hidden`)
   }, [isHome])
 
-  return (
-    <NavbarLayout overflow={overflow} id='NavbarLayout'>
-      <NavBackground id='NavBackground' isNavColor={isNavColor}>
-        <Crown id='Crown'>
-          <img src={logo} alt='page logo' />
-        </Crown>
-        <Nav id='Nav'>
-          <ul>
-            <li>
-              <Link to='/'>Iglesia</Link>
-            </li>
-            <li>
-              <Link to='/nosotros'>Nosotros</Link>
-            </li>
-            <li>Servicios</li>
-            <li>Ministerios</li>
-            <li>Contactanos</li>
-          </ul>
-        </Nav>
-      </NavBackground>
+  useEffect(() => {
+    console.log(`window`, window)
+  }, [])
 
-      {children}
-    </NavbarLayout>
+  const navigationArr = []
+
+  for (let navName in nav) {
+    const navItem = nav[navName]
+    const { label, url, sub } = navItem
+    if (sub.length === 0) {
+      navigationArr.push(
+        <Link
+          className='menuOptions'
+          key={label}
+          style={{ padding: `15px` }}
+          to={url}
+        >
+          {label}
+        </Link>
+      )
+    } else {
+      const submenu = sub.map(menu => (
+        <StyledLink
+          key={menu.label}
+          to={`/${menu.url.match(/^\/(.*)\/$/)[1].replace(/\//g, `-`)}/`}
+        >
+          {menu.label}
+        </StyledLink>
+      ))
+      navigationArr.push(
+        <div
+          id={`${navName}_MenuOptions`}
+          className='menuOptions'
+          key={navName}
+        >
+          {label}
+          <SubMenuCont id={`${navName}_SubMenuCont`}>{submenu}</SubMenuCont>
+        </div>
+      )
+    }
+  }
+
+  return (
+    <ThemeProvider theme={mainTheme}>
+      <NavbarLayout overflow={overflow} id='NavbarLayout'>
+        <NavBackground id='NavBackground' isNavColor={isNavColor}>
+          <Crown id='Crown'>
+            <img src={logo} alt='page logo' />
+          </Crown>
+          <Nav id='Nav'>
+            <div className='navLayout'>{navigationArr}</div>
+          </Nav>
+        </NavBackground>
+
+        {children}
+      </NavbarLayout>
+    </ThemeProvider>
   )
 }
 
@@ -58,7 +96,8 @@ NavBar.defaultProps = {
 }
 
 NavBar.propTypes = {
-  isHome: PropTypes.bool
+  isHome: PropTypes.bool,
+  nav: PropTypes.object
 }
 
 export default NavBar
@@ -90,33 +129,66 @@ const NavBackground = styled.div`
 `
 
 const Nav = styled.nav`
-  padding: 10px 0;
   width: 600px;
   background: transparent;
-  ul {
+  .navLayout {
     margin: 0;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    li {
-      list-style-type: none;
+  }
+  .menuOptions {
+    position: relative;
+    padding: 15px;
+    font-family: ${({ theme }) => theme.font};
+    ::after {
+      content: '';
+      width: 0px;
+      opacity: 0;
+      position: absolute;
+      bottom: 7px;
+      left: 0%;
+      transform: translateX(-50%);
+      border: 2px solid ${({ theme }) => theme.color.dorado};
+      transition: all 200ms ease;
+    }
+    ${({ theme }) => theme.link};
 
-      font-family: ${({ theme }) => theme.font};
-      color: ${({ theme }) => theme.color.dorado};
-
-      a {
-        color: ${({ theme }) => theme.color.dorado} !important;
-        text-decoration: none;
-        text-decoration-color: ${({ theme }) => theme.color.dorado} !important;
+    :hover {
+      text-decoration: none;
+      cursor: pointer;
+      ::after {
+        opacity: 1;
+        left: 50%;
+        width: 114px;
+        border: 2px solid ${({ theme }) => theme.color.dorado};
       }
     }
   }
 `
 
 const Crown = styled.div`
-  font-family: ${({ theme }) => theme.font};
-  color: ${({ theme }) => theme.color.dorado};
-
   margin: 0px 0 0 30px;
   width: 100px;
+`
+const SubMenuCont = styled.div`
+  display: none;
+  position: absolute;
+  max-width: 200px;
+  top: 55px;
+  left: 50%;
+  transform: translateX(-50%);
+  flex-direction: column;
+
+  background: ${({ theme }) => theme.color.violet};
+  .menuOptions:hover & {
+    display: flex;
+  }
+`
+
+const StyledLink = styled(Link)`
+  ${({ theme }) => theme.link};
+  &:hover {
+    ${({ theme }) => theme.linksHovered};
+  }
 `

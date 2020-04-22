@@ -13,7 +13,7 @@ import { MetaData } from '../components/common/meta'
  * This file renders a single page and loads all the content.
  *
  */
-const Page = ({ data, location }) => {
+const Page = ({ data, location, pageContext }) => {
   const page = data.ghostPage
   const { html, slug, feature_image, title } = data.ghostPage
 
@@ -23,7 +23,7 @@ const Page = ({ data, location }) => {
       <Helmet>
         <style type='text/css'>{`${page.codeinjection_styles}`}</style>
       </Helmet>
-      <Layout isHome={false}>
+      <Layout isHome={false} nav={pageContext.navigation}>
         <PageLayout id='PageLayout'>
           <PageHeader id='PageHeader'>
             <img src={feature_image} alt={`${slug} main image`} />
@@ -47,6 +47,7 @@ Page.propTypes = {
       feature_image: PropTypes.string
     }).isRequired
   }).isRequired,
+  pageContext: PropTypes.object,
   location: PropTypes.object.isRequired
 }
 
