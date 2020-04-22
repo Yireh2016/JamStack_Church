@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components'
 import { Link, graphql, useStaticQuery } from 'gatsby'
+import gsap from 'gsap'
 import PropTypes from 'prop-types'
 
 const NavBar = ({ children, isHome, nav }) => {
@@ -25,7 +26,7 @@ const NavBar = ({ children, isHome, nav }) => {
   `)
   const logo = data.ghostSettings.logo
 
-  const scrollControl = () => {
+  const setScrollControl = () => {
     navbarLayoutRef.current.addEventListener(`scroll`, e => {
       if (e.target.scrollTop <= 10) {
         setIsScrolled(false)
@@ -35,9 +36,64 @@ const NavBar = ({ children, isHome, nav }) => {
     })
   }
 
+  const playAnim = (t1, name) => {
+    t1[name].play()
+  }
+
+  const reverseAnim = (t1, name) => {
+    t1[name].reverse()
+  }
+  const setNavAnimation = (subMenuObj, menuObj) => {
+    const timelines = {}
+    for (let menu in subMenuObj) {
+      const submenu = subMenuObj[menu]
+      if (submenu.current) {
+        timelines[menu] = gsap.timeline({ paused: true })
+        console.log(
+          `timelines[menu]`,
+          timelines[menu],
+          menu,
+          submenu.current.id
+        )
+        timelines[menu]
+          .from(submenu.current, {
+            duration: 0.2,
+            ease: `ease`,
+            y: -50,
+            opacity: 0
+          })
+          .from(`.${menu}_sublink`, {
+            opacity: 0,
+            x: 100,
+            duration: 0.15,
+            ease: `ease`,
+            stagger: 0.15 / 2
+          })
+      }
+    }
+
+    for (let menuName in menuObj) {
+      const menu = menuObj[menuName]
+      menu.current &&
+        menu.current.addEventListener(`mouseenter`, e => {
+          e.stopPropagation()
+          console.log(`mouse enter me`, e.target.id, menuName)
+          playAnim(timelines, menuName)
+        })
+      menu.current &&
+        menu.current.addEventListener(`mouseleave`, e => {
+          e.stopPropagation()
+
+          console.log(`mouse leave me`, e.target.id, menuName)
+          reverseAnim(timelines, menuName)
+        })
+    }
+  }
+
   useEffect(() => {
-    scrollControl()
-  }, [])
+    setScrollControl()
+    setNavAnimation(submenuRef, menuRef)
+  }, [submenuRef])
 
   useEffect(() => {
     if (!isHome) {
@@ -49,11 +105,17 @@ const NavBar = ({ children, isHome, nav }) => {
     setOverflow(`hidden`)
   }, [isHome])
 
-  useEffect(() => {}, [])
+  useEffect(() => {
+    setNavAnimation(submenuRef)
+  }, [])
 
+  //template
   const navigationArr = []
-
+  const submenuRef = {}
+  const menuRef = {}
   for (let navName in nav) {
+    submenuRef[navName] = useRef(null)
+    menuRef[navName] = useRef(null)
     const navItem = nav[navName]
     const { label, url, sub } = navItem
     if (sub.length === 0) {
@@ -65,6 +127,7 @@ const NavBar = ({ children, isHome, nav }) => {
     } else {
       const submenu = sub.map(menu => (
         <StyledLink
+          className={`${navName}_sublink`}
           key={menu.label}
           to={`/${menu.url.match(/^\/(.*)\/$/)[1].replace(/\//g, `-`)}/`}
         >
@@ -76,16 +139,20 @@ const NavBar = ({ children, isHome, nav }) => {
           id={`${navName}_MenuOptions`}
           className='menuOptions'
           key={navName}
+          ref={menuRef[navName]}
         >
           {label}
-          <SubMenuCont isScrolled={isScrolled} id={`${navName}_SubMenuCont`}>
+          <SubMenuCont
+            ref={submenuRef[navName]}
+            isScrolled={isScrolled}
+            id={`${navName}_SubMenuCont`}
+          >
             {submenu}
           </SubMenuCont>
         </div>
       )
     }
   }
-
   return (
     <NavbarLayout ref={navbarLayoutRef} overflow={overflow} id='NavbarLayout'>
       <NavBackground id='NavBackground' isNavColor={isNavColor}>
@@ -179,23 +246,23 @@ const Nav = styled.nav`
 `
 
 const Crown = styled.div`
+  padding: 10px;
   margin: 0px 0 0 30px;
   transition: all 200ms ease;
   width: ${({ isScrolled }) => (isScrolled ? `60px` : `100px`)};
 `
 const SubMenuCont = styled.div`
-  display: none;
+  display: flex;
   position: absolute;
   max-width: 200px;
   top: ${({ isScrolled }) => (isScrolled ? `32px` : `53px`)};
   left: 50%;
   transform: translateX(-50%);
   flex-direction: column;
-
   background: ${({ theme }) => theme.color.violet};
-  .menuOptions:hover & {
+  ${`` /* .menuOptions:hover & {
     display: flex;
-  }
+  } */}
 `
 
 const StyledLink = styled(Link)`

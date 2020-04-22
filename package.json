@@ -54,11 +54,12 @@
     "gatsby-source-filesystem": "2.1.48",
     "gatsby-source-ghost": "4.0.4",
     "gatsby-transformer-sharp": "2.3.16",
+    "gsap": "^3.2.6",
     "lodash": "4.17.15",
     "react": "16.13.0",
     "react-dom": "16.13.0",
-    "react-iframe": "1.8.0",
     "react-helmet": "5.2.1",
+    "react-iframe": "1.8.0",
     "styled-components": "5.1.0"
   }
 }

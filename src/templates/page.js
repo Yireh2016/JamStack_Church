@@ -86,7 +86,7 @@ const TitleCont = styled.div`
   height: 100%;
   width: 100%;
   left: 0;
-  background: ${({ theme }) => theme.color.violetAlpha};
+  background: ${({ theme }) => theme.color.negroAlpha};
   h1 {
     color: ${({ theme }) => theme.color.dorado};
   }
