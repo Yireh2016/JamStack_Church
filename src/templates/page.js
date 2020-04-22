@@ -27,11 +27,14 @@ const Page = ({ data, location, pageContext }) => {
         <PageLayout id='PageLayout'>
           <PageHeader id='PageHeader'>
             <img src={feature_image} alt={`${slug} main image`} />
-            <TitleCont>
+            <TitleCont id='TitleCont'>
               <h1> {title}</h1>
             </TitleCont>
           </PageHeader>
-          <section dangerouslySetInnerHTML={{ __html: html }}></section>
+          <section
+            style={{ margin: `15px 0 0 0` }}
+            dangerouslySetInnerHTML={{ __html: html }}
+          ></section>
         </PageLayout>
       </Layout>
     </>
@@ -65,6 +68,10 @@ const PageHeader = styled.header`
   position: relative;
   width: 100%;
   height: 400px;
+  overflow: hidden;
+  img {
+    width: 100%;
+  }
   h1 {
     position: absolute;
     top: 50%;
@@ -79,7 +86,7 @@ const TitleCont = styled.div`
   height: 100%;
   width: 100%;
   left: 0;
-  background: ${({ theme }) => theme.color.negroAlpha};
+  background: ${({ theme }) => theme.color.violetAlpha};
   h1 {
     color: ${({ theme }) => theme.color.dorado};
   }

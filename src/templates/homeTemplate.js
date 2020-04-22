@@ -29,7 +29,7 @@ const Home = ({ title }) => (
     </Cruz>
     <Title id='Title'>
       <h1>{title}</h1>
-      <Link to='/nosotros'>
+      <Link to='/nosotros-historia'>
         <Call2Action>Conócenos</Call2Action>
       </Link>
     </Title>

@@ -44,6 +44,7 @@ const DefaultLayout = ({ children, bodyClass, isHome, nav }) => {
           <html lang={site.lang} />
           <style type='text/css'>{`${site.codeinjection_styles}`}</style>
           <body className={bodyClass} />
+          <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.4/gsap.min.js'></script>
         </Helmet>
         <NavBar id='NavBar' nav={nav} isHome={isHome}>
           {children}

@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import styled, { ThemeProvider } from 'styled-components'
+import React, { useEffect, useState, useRef } from 'react'
+import styled from 'styled-components'
 import { Link, graphql, useStaticQuery } from 'gatsby'
 import PropTypes from 'prop-types'
 
-import { mainTheme } from '../../themes/mainTheme'
-
 const NavBar = ({ children, isHome, nav }) => {
   const [isNavColor, setIsNavColor] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+
   const [overflow, setOverflow] = useState(`hidden`)
+
+  const crownRef = useRef(null)
+  const navbarLayoutRef = useRef(null)
 
   const data = useStaticQuery(graphql`
     query ghostSettings {
@@ -21,6 +24,21 @@ const NavBar = ({ children, isHome, nav }) => {
     }
   `)
   const logo = data.ghostSettings.logo
+
+  const scrollControl = () => {
+    navbarLayoutRef.current.addEventListener(`scroll`, e => {
+      if (e.target.scrollTop <= 10) {
+        setIsScrolled(false)
+        return
+      }
+      setIsScrolled(true)
+    })
+  }
+
+  useEffect(() => {
+    scrollControl()
+  }, [])
+
   useEffect(() => {
     if (!isHome) {
       setIsNavColor(true)
@@ -31,9 +49,7 @@ const NavBar = ({ children, isHome, nav }) => {
     setOverflow(`hidden`)
   }, [isHome])
 
-  useEffect(() => {
-    console.log(`window`, window)
-  }, [])
+  useEffect(() => {}, [])
 
   const navigationArr = []
 
@@ -42,12 +58,7 @@ const NavBar = ({ children, isHome, nav }) => {
     const { label, url, sub } = navItem
     if (sub.length === 0) {
       navigationArr.push(
-        <Link
-          className='menuOptions'
-          key={label}
-          style={{ padding: `15px` }}
-          to={url}
-        >
+        <Link className='menuOptions' key={label} to={url}>
           {label}
         </Link>
       )
@@ -67,27 +78,27 @@ const NavBar = ({ children, isHome, nav }) => {
           key={navName}
         >
           {label}
-          <SubMenuCont id={`${navName}_SubMenuCont`}>{submenu}</SubMenuCont>
+          <SubMenuCont isScrolled={isScrolled} id={`${navName}_SubMenuCont`}>
+            {submenu}
+          </SubMenuCont>
         </div>
       )
     }
   }
 
   return (
-    <ThemeProvider theme={mainTheme}>
-      <NavbarLayout overflow={overflow} id='NavbarLayout'>
-        <NavBackground id='NavBackground' isNavColor={isNavColor}>
-          <Crown id='Crown'>
-            <img src={logo} alt='page logo' />
-          </Crown>
-          <Nav id='Nav'>
-            <div className='navLayout'>{navigationArr}</div>
-          </Nav>
-        </NavBackground>
+    <NavbarLayout ref={navbarLayoutRef} overflow={overflow} id='NavbarLayout'>
+      <NavBackground id='NavBackground' isNavColor={isNavColor}>
+        <Crown isScrolled={isScrolled} ref={crownRef} id='Crown'>
+          <img src={logo} alt='page logo' />
+        </Crown>
+        <Nav isScrolled={isScrolled} id='Nav'>
+          <div className='navLayout'>{navigationArr}</div>
+        </Nav>
+      </NavBackground>
 
-        {children}
-      </NavbarLayout>
-    </ThemeProvider>
+      {children}
+    </NavbarLayout>
   )
 }
 
@@ -139,20 +150,20 @@ const Nav = styled.nav`
   }
   .menuOptions {
     position: relative;
-    padding: 15px;
     font-family: ${({ theme }) => theme.font};
     ::after {
       content: '';
       width: 0px;
       opacity: 0;
       position: absolute;
-      bottom: 7px;
+      bottom: ${({ isScrolled }) => (isScrolled ? `1px` : `4px`)};
       left: 0%;
       transform: translateX(-50%);
       border: 2px solid ${({ theme }) => theme.color.dorado};
       transition: all 200ms ease;
     }
     ${({ theme }) => theme.link};
+    padding: ${({ isScrolled }) => (isScrolled ? `5px` : `15px`)};
 
     :hover {
       text-decoration: none;
@@ -169,13 +180,14 @@ const Nav = styled.nav`
 
 const Crown = styled.div`
   margin: 0px 0 0 30px;
-  width: 100px;
+  transition: all 200ms ease;
+  width: ${({ isScrolled }) => (isScrolled ? `60px` : `100px`)};
 `
 const SubMenuCont = styled.div`
   display: none;
   position: absolute;
   max-width: 200px;
-  top: 55px;
+  top: ${({ isScrolled }) => (isScrolled ? `32px` : `53px`)};
   left: 50%;
   transform: translateX(-50%);
   flex-direction: column;
@@ -188,6 +200,8 @@ const SubMenuCont = styled.div`
 
 const StyledLink = styled(Link)`
   ${({ theme }) => theme.link};
+  padding: 15px;
+
   &:hover {
     ${({ theme }) => theme.linksHovered};
   }

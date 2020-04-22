@@ -13,10 +13,11 @@ export const mainTheme = {
     text-decoration: none;
     transition: all 200ms ease;
     cursor: pointer;
+    font-weight:bold;
   `,
   link: `
     text-align: center;
     color: #EDB955;
     width: 150px;
-    padding: 15px;`
+    `
 }
