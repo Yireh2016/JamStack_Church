@@ -35,8 +35,6 @@ const DefaultLayout = ({ children, bodyClass, isHome, nav }) => {
 
   const site = data.allGhostSettings.edges[0].node
 
-  console.log(`nav in Layout`, nav)
-
   return (
     <>
       <ThemeProvider theme={mainTheme}>

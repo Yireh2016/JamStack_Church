@@ -5,14 +5,14 @@ import gsap from 'gsap'
 import PropTypes from 'prop-types'
 
 const NavBar = ({ children, isHome, nav }) => {
+  //data
   const [isNavColor, setIsNavColor] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-
   const [overflow, setOverflow] = useState(`hidden`)
-
+  //refs
   const crownRef = useRef(null)
   const navbarLayoutRef = useRef(null)
-
+  //queries
   const data = useStaticQuery(graphql`
     query ghostSettings {
       ghostSettings {
@@ -25,7 +25,7 @@ const NavBar = ({ children, isHome, nav }) => {
     }
   `)
   const logo = data.ghostSettings.logo
-
+  //methods
   const setScrollControl = () => {
     navbarLayoutRef.current.addEventListener(`scroll`, e => {
       if (e.target.scrollTop <= 10) {
@@ -49,18 +49,17 @@ const NavBar = ({ children, isHome, nav }) => {
       const submenu = subMenuObj[menu]
       if (submenu.current) {
         timelines[menu] = gsap.timeline({ paused: true })
-        console.log(
-          `timelines[menu]`,
-          timelines[menu],
-          menu,
-          submenu.current.id
-        )
+
         timelines[menu]
-          .from(submenu.current, {
+          .to(submenu.current, {
+            duration: 0,
+            display: `flex`
+          })
+          .to(submenu.current, {
             duration: 0.2,
             ease: `ease`,
-            y: -50,
-            opacity: 0
+            y: 50,
+            opacity: 1
           })
           .from(`.${menu}_sublink`, {
             opacity: 0,
@@ -77,23 +76,21 @@ const NavBar = ({ children, isHome, nav }) => {
       menu.current &&
         menu.current.addEventListener(`mouseenter`, e => {
           e.stopPropagation()
-          console.log(`mouse enter me`, e.target.id, menuName)
           playAnim(timelines, menuName)
         })
+
       menu.current &&
         menu.current.addEventListener(`mouseleave`, e => {
           e.stopPropagation()
-
-          console.log(`mouse leave me`, e.target.id, menuName)
           reverseAnim(timelines, menuName)
         })
     }
   }
-
+  //hooks
   useEffect(() => {
     setScrollControl()
     setNavAnimation(submenuRef, menuRef)
-  }, [submenuRef])
+  }, [])
 
   useEffect(() => {
     if (!isHome) {
@@ -104,10 +101,6 @@ const NavBar = ({ children, isHome, nav }) => {
     setIsNavColor(false)
     setOverflow(`hidden`)
   }, [isHome])
-
-  useEffect(() => {
-    setNavAnimation(submenuRef)
-  }, [])
 
   //template
   const navigationArr = []
@@ -156,9 +149,11 @@ const NavBar = ({ children, isHome, nav }) => {
   return (
     <NavbarLayout ref={navbarLayoutRef} overflow={overflow} id='NavbarLayout'>
       <NavBackground id='NavBackground' isNavColor={isNavColor}>
-        <Crown isScrolled={isScrolled} ref={crownRef} id='Crown'>
-          <img src={logo} alt='page logo' />
-        </Crown>
+        <Link to='/'>
+          <Crown isScrolled={isScrolled} ref={crownRef} id='Crown'>
+            <img src={logo} alt='page logo' />
+          </Crown>
+        </Link>
         <Nav isScrolled={isScrolled} id='Nav'>
           <div className='navLayout'>{navigationArr}</div>
         </Nav>
@@ -179,7 +174,7 @@ NavBar.propTypes = {
 }
 
 export default NavBar
-
+//styles
 const NavbarLayout = styled.div`
   position: relative;
   display: block;
@@ -252,17 +247,15 @@ const Crown = styled.div`
   width: ${({ isScrolled }) => (isScrolled ? `60px` : `100px`)};
 `
 const SubMenuCont = styled.div`
-  display: flex;
+  display: none;
   position: absolute;
   max-width: 200px;
-  top: ${({ isScrolled }) => (isScrolled ? `32px` : `53px`)};
+  top: ${({ isScrolled }) => (isScrolled ? `-18px` : `3px`)};
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%);
+  opacity: 0;
   flex-direction: column;
   background: ${({ theme }) => theme.color.violet};
-  ${`` /* .menuOptions:hover & {
-    display: flex;
-  } */}
 `
 
 const StyledLink = styled(Link)`
