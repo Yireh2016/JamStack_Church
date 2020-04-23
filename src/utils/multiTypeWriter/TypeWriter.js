@@ -82,6 +82,9 @@ class TypeWriter {
     this.isReverse = false
     this.play()
   }
+  stop() {
+    clearInterval(this.timer)
+  }
 }
 
 export default TypeWriter

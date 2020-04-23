@@ -1,40 +1,66 @@
-import React from 'react'
-import styled from 'styled-components'
+import * as React from 'react'
+import styled, { keyframes } from 'styled-components'
 import Iframe from 'react-iframe'
 import PropTypes from 'prop-types'
 
 import Call2Action from '../components/common/Call2Action'
 import { Link } from 'gatsby'
 
-const Home = ({ title }) => (
-  <>
-    <BackGroundLayVideo id='BackGroundLayVideo'>
-      <Iframe
-        frameborder='0'
-        scrolling='no'
-        marginheight='0'
-        marginwidth='0'
-        allowfullscreen
-        width='100%'
-        height='100%'
-        type='text/html'
-        src='https://www.youtube.com/embed/RDMMtulshRDlQKM70_2DcsIncY?list=RD70_2DcsIncY&autoplay=1&mute=1&loop=1&controls=0&playsinline=0&showinfo=0'
-      />
-    </BackGroundLayVideo>
-    <BackGroundLay id='BackGroundLay' />
+import MultiTypeWriter from '../utils/multiTypeWriter/MultiTypeWriter'
 
-    <Cruz id='Cruz'>
-      <div id='horizontal' />
-      <div id='vertical' />
-    </Cruz>
-    <Title id='Title'>
-      <h1>{title}</h1>
-      <Link to='/nosotros-historia'>
-        <Call2Action>Conócenos</Call2Action>
-      </Link>
-    </Title>
-  </>
-)
+const Home = ({ title }) => {
+  const typewriterRef = React.useRef(null)
+
+  React.useEffect(() => {
+    const time = 200
+    const textEl = typewriterRef.current
+
+    const writer = new MultiTypeWriter({
+      list: [`Caracas`, `Madrid`, `Pto La Cruz`, `Altagracia`],
+      time,
+      el: textEl,
+      wait: 800
+    })
+    writer.play()
+
+    return () => {
+      writer.stop()
+    }
+  }, [])
+
+  return (
+    <>
+      <BackGroundLayVideo id='BackGroundLayVideo'>
+        <Iframe
+          frameborder='0'
+          scrolling='no'
+          marginheight='0'
+          marginwidth='0'
+          allowfullscreen
+          width='100%'
+          height='100%'
+          type='text/html'
+          src='https://www.youtube.com/embed/RDMMtulshRDlQKM70_2DcsIncY?list=RD70_2DcsIncY&autoplay=1&mute=1&loop=1&controls=0&playsinline=0&showinfo=0'
+        />
+      </BackGroundLayVideo>
+      <BackGroundLay id='BackGroundLay' />
+
+      <Cruz id='Cruz'>
+        <div id='horizontal' />
+        <div id='vertical' />
+      </Cruz>
+      <Title id='Title'>
+        <h1>
+          {title}
+          <TypeWriterText ref={typewriterRef} id='typewriter'></TypeWriterText>
+        </h1>
+        <Link to='/nosotros-historia'>
+          <Call2Action>Conócenos</Call2Action>
+        </Link>
+      </Title>
+    </>
+  )
+}
 
 Home.propTypes = {
   title: PropTypes.string
@@ -64,6 +90,27 @@ const Title = styled.div`
     margin: 0;
     font-size: 100px !important;
     color: ${({ theme }) => theme.color.blanco};
+  }
+`
+
+const pulse = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`
+
+const TypeWriterText = styled.div`
+  &::after {
+    content: '|';
+    font-weight: bold;
+    color: ${({ theme }) => theme.color.dorado};
+    animation-duration: 200ms;
+    animation-iteration-count: infinite;
+    animation-name: ${pulse};
+    animation-direction: alternate;
   }
 `
 
